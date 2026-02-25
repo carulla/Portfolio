@@ -22,7 +22,7 @@ export default function ProjectsLayout({ children }: { children: React.ReactNode
     return (
         <div className="flex h-full w-full flex-col md:flex-row bg-background-light dark:bg-background-dark overflow-hidden">
             {/* File Explorer Sidebar */}
-            <aside className="w-full md:w-64 flex flex-col border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#192233] flex-shrink-0 h-1/3 md:h-full overflow-y-auto">
+            <aside className={`w-full md:w-64 flex flex-col border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#192233] flex-shrink-0 h-full overflow-y-auto ${pathname === '/projects' ? 'flex' : 'hidden md:flex'}`}>
                 <div className="px-4 py-3 sticky top-0 bg-slate-50 dark:bg-[#192233] z-10 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
                     <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Explorer</h2>
                 </div>
@@ -105,7 +105,7 @@ export default function ProjectsLayout({ children }: { children: React.ReactNode
             </aside>
 
             {/* Main Content Area */}
-            <main className="flex-1 overflow-hidden relative flex flex-col h-2/3 md:h-full bg-white dark:bg-background-dark">
+            <main className={`flex-1 overflow-hidden relative flex flex-col h-full bg-white dark:bg-background-dark ${pathname === '/projects' ? 'hidden md:flex' : 'flex'}`}>
                 {children}
             </main>
         </div>

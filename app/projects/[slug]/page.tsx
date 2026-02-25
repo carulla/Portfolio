@@ -1,8 +1,8 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { EditorTab } from '@/components/ui/editor-tab';
-import { FileCode2, Play, Code2, Rocket } from 'lucide-react';
+import { FileCode2, Play, Code2, Rocket, ChevronLeft } from 'lucide-react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { AnimatedPreview } from '@/components/ui/animated-preview';
@@ -107,6 +107,7 @@ const PROJECT_DATA: Record<string, any> = {
 
 export default function ProjectSlugPage() {
     const params = useParams();
+    const router = useRouter();
     const slug = params.slug as string;
 
     const project = PROJECT_DATA[slug] || {
@@ -123,7 +124,14 @@ export default function ProjectSlugPage() {
     return (
         <div className="flex flex-col h-full w-full">
             {/* Target File Tab */}
-            <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/50 overflow-x-auto hide-scrollbar">
+            <div className="flex border-b border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-900/50 overflow-x-auto hide-scrollbar z-10 sticky top-0 items-center">
+                <button
+                    onClick={() => router.push('/projects')}
+                    className="md:hidden flex items-center justify-center p-2 text-slate-500 hover:text-slate-900 dark:hover:text-slate-100 border-r border-slate-200 dark:border-slate-800 pr-3 mr-1"
+                >
+                    <ChevronLeft className="w-5 h-5" />
+                    <span className="text-xs font-bold uppercase tracking-wider ml-1">Back</span>
+                </button>
                 <EditorTab title={project.name} icon={FileCode2} iconColor="text-blue-400" isActive={true} />
             </div>
 
