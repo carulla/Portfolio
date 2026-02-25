@@ -7,8 +7,7 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { AnimatedPreview } from '@/components/ui/animated-preview';
 
-// Mock data for project image frame lengths. We use the manually extracted list
-// of valid paths so Next.js static export does not need fs on the client side.
+// Mock data for project image frame lengths. We safely generate simple sequential paths.
 const PROJECT_FRAMECOUNTS: Record<string, number> = {
     'coupe': 12,
     'fluentes': 16,
@@ -26,96 +25,15 @@ const FOLDER_NAMES: Record<string, string> = {
     'running-records': 'runningrecords'
 };
 
-// Mappings manually extracted from directory to prevent fs import entirely on the client
-const PROJECT_FRAMES: Record<string, string[]> = {
-    'coupe': [
-        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.18.01.png",
-        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.18.09.png",
-        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.18.16.png",
-        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.18.22.png",
-        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.18.29.png",
-        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.18.38.png",
-        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.18.57.png",
-        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.19.06.png",
-        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.19.17.png",
-        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.19.42.png",
-        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.19.47.png",
-        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.20.03.png",
-    ],
-    'fluentes': [
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.20.46.png",
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.20.53.png",
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.20.59.png",
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.21.05.png",
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.21.12.png",
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.21.18.png",
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.21.30.png",
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.21.51.png",
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.22.05.png",
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.23.11.png",
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.23.27.png",
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.23.34.png",
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.23.46.png",
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.23.56.png",
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.24.09.png",
-        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.24.23.png",
-    ],
-    'just-play-sports': [
-        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.25.35.png",
-        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.25.44.png",
-        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.25.51.png",
-        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.25.54.png",
-        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.25.59.png",
-        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.26.04.png",
-        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.26.07.png",
-        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.26.16.png",
-        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.26.30.png",
-        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.26.45.png",
-        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.27.05.png",
-    ],
-    'evidencia': [
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.27.37.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.27.44.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.27.51.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.27.58.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.28.21.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.28.25.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.28.31.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.28.49.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.28.52.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.28.55.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.29.02.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.29.12.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.29.33.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.29.57.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.30.05.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.30.17.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.30.31.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.30.43.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.31.05.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.31.14.png",
-        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.31.32.png",
-    ],
-    'running-records': [
-        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.13.png",
-        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.19.png",
-        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.25.png",
-        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.31.png",
-        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.39.png",
-        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.45.png",
-        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.51.png",
-        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.58.png",
-        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.33.11.png",
-        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.33.28.png",
-        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.33.37.png",
-        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.34.00.png",
-        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.34.15.png",
-    ]
-};
-
-// Generate frames safely using our extracted object avoiding fs entirely
+// Generate frames sequentially without fs imports or overly long hardcoded paths
 function getFramesForProject(slug: string): string[] {
-    return PROJECT_FRAMES[slug] || [];
+    const folder = FOLDER_NAMES[slug];
+    const count = PROJECT_FRAMECOUNTS[slug] || 0;
+
+    if (!folder || count === 0) return [];
+
+    // Generates an array of simple paths like: /web-apps-frames/coupe/frame-1.png
+    return Array.from({ length: count }, (_, i) => `/web-apps-frames/${folder}/frame-${i + 1}.png`);
 }
 
 // Mock data for projects
