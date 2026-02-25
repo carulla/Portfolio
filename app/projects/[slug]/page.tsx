@@ -33,7 +33,7 @@ function getFramesForProject(slug: string): string[] {
     if (!folder || count === 0) return [];
 
     // Generates an array of simple paths like: /web-apps-frames/coupe/frame-1.png
-    return Array.from({ length: count }, (_, i) => `/web-apps-frames/${folder}/frame-${i + 1}.png`);
+    return Array.from({ length: count }, (_, i) => `/web-apps-frames/${folder}/frame-${i + 1}.webp`);
 }
 
 // Mock data for projects
