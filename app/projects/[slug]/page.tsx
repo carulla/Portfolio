@@ -148,30 +148,47 @@ export default function ProjectSlugPage() {
                         </div>
                     ))}
 
-                    {/* Animated Preview Component */}
+                    {/* Animated Preview Component with Magic Border Beam */}
                     {frames.length > 0 && (
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="mt-8 mx-6 md:mx-12 relative group max-w-2xl"
+                            className="mt-8 mx-6 md:mx-12 max-w-2xl relative rounded-xl p-[1px] overflow-hidden group shadow-2xl shadow-primary/10"
                         >
-                            <AnimatedPreview frames={frames} slug={slug} />
+                            {/* Magic UI Border Beam implementation */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-[spin_4s_linear_infinite]"
+                                style={{ background: 'conic-gradient(from 0deg, transparent 0 340deg, var(--color-primary) 360deg)' }} />
+                            <div className="absolute inset-[1px] bg-slate-100 dark:bg-slate-900 rounded-xl" />
+
+                            {/* Actual Preview Content */}
+                            <div className="relative rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 flex items-center justify-center min-h-[200px] md:min-h-[400px]">
+                                <AnimatedPreview frames={frames} slug={slug} />
+                            </div>
                         </motion.div>
                     )}
-                </div>
 
-                {/* Action Buttons */}
-                <div className="p-6 space-y-3 md:max-w-2xl mx-auto md:mt-12">
-                    {project.liveUrl && (
-                        <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/20">
-                            <Rocket className="w-5 h-5" />
-                            View Live Site
-                        </a>
-                    )}
-                    <button className="w-full bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100 font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all">
-                        <Code2 className="w-5 h-5" />
-                        View Repository
-                    </button>
+                    {/* Magic UI Shimmer Action Button */}
+                    <div className="p-6 space-y-3 md:max-w-2xl mx-auto md:mt-12 w-full">
+                        {project.liveUrl && (
+                            <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
+                                className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-xl bg-slate-900 dark:bg-slate-800 px-8 py-4 font-bold text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_40px_8px_rgba(19,91,236,0.3)]"
+                            >
+                                {/* Shimmer sweep effect */}
+                                <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-150%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(150%)]">
+                                    <div className="relative h-full w-8 bg-white/20" />
+                                </div>
+
+                                {/* Inner content */}
+                                <div className="relative flex items-center gap-2 z-10">
+                                    <Rocket className="w-5 h-5 group-hover:animate-bounce" />
+                                    <span>Launch Live Experience</span>
+                                </div>
+
+                                {/* Subtle inner border */}
+                                <div className="absolute inset-0 rounded-xl border border-white/10" />
+                            </a>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

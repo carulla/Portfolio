@@ -27,80 +27,91 @@ export default function ProjectsLayout({ children }: { children: React.ReactNode
                     <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Explorer</h2>
                 </div>
 
-                <div className="py-2 flex flex-col gap-1">
+                <div className="py-2 flex flex-col gap-[1px]">
                     <FileExplorerItem
-                        name="Web-Apps"
+                        name="Portfolio"
                         type="folder"
                         icon={Folder}
-                        isOpen={openFolders['Web-Apps']}
-                        onClick={() => toggleFolder('Web-Apps')}
+                        isOpen={openFolders['Portfolio']}
+                        onClick={() => toggleFolder('Portfolio')}
+                        depth={0}
                     >
                         <FileExplorerItem
-                            name="Coupe.SaaS"
-                            subtitle="Full Stack"
-                            type="file"
-                            icon={Database}
-                            iconColor="text-blue-400"
-                            isActive={pathname === '/projects/coupe'}
-                            onClick={() => router.push('/projects/coupe')}
-                        />
-                        <FileExplorerItem
-                            name="Fluentes.app"
-                            subtitle="Full Stack"
-                            type="file"
-                            icon={LayoutTemplateIcon}
-                            iconColor="text-green-500"
-                            isActive={pathname === '/projects/fluentes'}
-                            onClick={() => router.push('/projects/fluentes')}
-                        />
-                        <FileExplorerItem
-                            name="JustPlay.app"
-                            subtitle="Frontend/Backend"
-                            type="file"
-                            icon={FileCode2}
-                            iconColor="text-orange-500"
-                            isActive={pathname === '/projects/just-play-sports'}
-                            onClick={() => router.push('/projects/just-play-sports')}
-                        />
-                    </FileExplorerItem>
+                            name="Web-Apps"
+                            type="folder"
+                            icon={Folder}
+                            isOpen={openFolders['Web-Apps']}
+                            onClick={() => toggleFolder('Web-Apps')}
+                            depth={1}
+                        >
+                            <FileExplorerItem
+                                name="Coupe.SaaS"
+                                type="file"
+                                icon={Database}
+                                iconColor="text-blue-400"
+                                isActive={pathname === '/projects/coupe'}
+                                onClick={() => router.push('/projects/coupe')}
+                                depth={2}
+                            />
+                            <FileExplorerItem
+                                name="Fluentes.app"
+                                type="file"
+                                icon={LayoutTemplateIcon}
+                                iconColor="text-green-500"
+                                isActive={pathname === '/projects/fluentes'}
+                                onClick={() => router.push('/projects/fluentes')}
+                                depth={2}
+                            />
+                            <FileExplorerItem
+                                name="JustPlay.app"
+                                type="file"
+                                icon={FileCode2}
+                                iconColor="text-orange-500"
+                                isActive={pathname === '/projects/just-play-sports'}
+                                onClick={() => router.push('/projects/just-play-sports')}
+                                depth={2}
+                            />
+                        </FileExplorerItem>
 
-                    <FileExplorerItem
-                        name="EdTech-Projects"
-                        type="folder"
-                        icon={Folder}
-                        iconColor="text-cyan-500"
-                        isOpen={openFolders['EdTech-Projects']}
-                        onClick={() => toggleFolder('EdTech-Projects')}
-                    >
                         <FileExplorerItem
-                            name="EvidencIA.ts"
-                            subtitle="Vibe Coding"
+                            name="EdTech-Projects"
+                            type="folder"
+                            icon={Folder}
+                            iconColor="text-cyan-500"
+                            isOpen={openFolders['EdTech-Projects']}
+                            onClick={() => toggleFolder('EdTech-Projects')}
+                            depth={1}
+                        >
+                            <FileExplorerItem
+                                name="EvidencIA.ts"
+                                type="file"
+                                icon={FileCode2}
+                                iconColor="text-purple-400"
+                                isActive={pathname === '/projects/evidencia'}
+                                onClick={() => router.push('/projects/evidencia')}
+                                depth={2}
+                            />
+                            <FileExplorerItem
+                                name="RunningRecords.ts"
+                                type="file"
+                                icon={FileCode2}
+                                iconColor="text-emerald-400"
+                                isActive={pathname === '/projects/running-records'}
+                                onClick={() => router.push('/projects/running-records')}
+                                depth={2}
+                            />
+                        </FileExplorerItem>
+
+                        <FileExplorerItem
+                            name="README.md"
                             type="file"
-                            icon={FileCode2}
+                            icon={FileJson}
                             iconColor="text-purple-400"
-                            isActive={pathname === '/projects/evidencia'}
-                            onClick={() => router.push('/projects/evidencia')}
-                        />
-                        <FileExplorerItem
-                            name="RunningRecords.ts"
-                            subtitle="Full Stack"
-                            type="file"
-                            icon={FileCode2}
-                            iconColor="text-emerald-400"
-                            isActive={pathname === '/projects/running-records'}
-                            onClick={() => router.push('/projects/running-records')}
+                            isActive={pathname === '/projects'}
+                            onClick={() => router.push('/projects')}
+                            depth={1}
                         />
                     </FileExplorerItem>
-
-                    <FileExplorerItem
-                        name="README.md"
-                        subtitle="Markdown"
-                        type="file"
-                        icon={FileJson}
-                        iconColor="text-purple-400"
-                        isActive={pathname === '/projects'}
-                        onClick={() => router.push('/projects')}
-                    />
                 </div>
             </aside>
 
