@@ -153,7 +153,7 @@ export default function ProjectSlugPage() {
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="mt-8 mx-6 md:mx-12 max-w-2xl relative rounded-xl p-[1px] overflow-hidden group shadow-2xl shadow-primary/10"
+                            className="mt-8 mx-6 md:mx-auto md:w-[90%] lg:w-[80%] max-w-6xl relative rounded-xl p-[1px] overflow-hidden group shadow-2xl shadow-primary/10"
                         >
                             {/* Magic UI Border Beam implementation */}
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-[spin_4s_linear_infinite]"
@@ -161,17 +161,17 @@ export default function ProjectSlugPage() {
                             <div className="absolute inset-[1px] bg-slate-100 dark:bg-slate-900 rounded-xl" />
 
                             {/* Actual Preview Content */}
-                            <div className="relative rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 flex items-center justify-center min-h-[200px] md:min-h-[400px]">
+                            <div className="relative rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 flex items-center justify-center min-h-[200px] md:min-h-[500px]">
                                 <AnimatedPreview frames={frames} slug={slug} />
                             </div>
                         </motion.div>
                     )}
 
                     {/* Magic UI Shimmer Action Button */}
-                    <div className="p-6 space-y-3 md:max-w-2xl mx-auto md:mt-12 w-full">
+                    <div className="p-6 md:pb-12 space-y-3 md:mx-auto md:w-[90%] lg:w-[80%] max-w-6xl md:mt-8 w-full">
                         {project.liveUrl && (
                             <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
-                                className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-xl bg-slate-900 dark:bg-slate-800 px-8 py-4 font-bold text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_40px_8px_rgba(19,91,236,0.3)]"
+                                className="group relative inline-flex w-full items-center justify-center overflow-hidden rounded-xl bg-slate-900 dark:bg-slate-800 px-8 py-4 md:py-6 font-bold text-white transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_40px_8px_rgba(19,91,236,0.3)] md:text-lg"
                             >
                                 {/* Shimmer sweep effect */}
                                 <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-150%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(150%)]">
@@ -179,8 +179,8 @@ export default function ProjectSlugPage() {
                                 </div>
 
                                 {/* Inner content */}
-                                <div className="relative flex items-center gap-2 z-10">
-                                    <Rocket className="w-5 h-5 group-hover:animate-bounce" />
+                                <div className="relative flex items-center gap-3 z-10">
+                                    <Rocket className="w-5 h-5 md:w-6 md:h-6 group-hover:animate-bounce" />
                                     <span>Launch Live Experience</span>
                                 </div>
 

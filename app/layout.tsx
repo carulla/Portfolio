@@ -21,6 +21,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 import { Sidebar } from '@/components/layout/sidebar';
+import { ExplorerSidebar } from '@/components/layout/explorer-sidebar';
 import { BottomNav } from '@/components/layout/bottom-nav';
 
 export const metadata: Metadata = {
@@ -49,8 +50,11 @@ export default function RootLayout({
           <Sidebar />
 
           {/* Main Application Area */}
-          <div className="flex-1 flex flex-col md:ml-14 overflow-hidden relative pb-20 md:pb-0">
-            {children}
+          <div className="flex-1 flex flex-row md:ml-14 overflow-hidden relative pb-20 md:pb-0">
+            <ExplorerSidebar />
+            <div className="flex-1 overflow-hidden relative flex flex-col h-full">
+              {children}
+            </div>
           </div>
 
           {/* Mobile Bottom Navigation */}
