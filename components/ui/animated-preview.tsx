@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { Play, Pause } from "lucide-react";
 
 interface AnimatedPreviewProps {
@@ -9,11 +8,12 @@ interface AnimatedPreviewProps {
     slug: string;
 }
 
+const BASE_PATH = process.env.NODE_ENV === "production" ? "/Portfolio" : "";
+
 export function AnimatedPreview({ frames, slug }: AnimatedPreviewProps) {
     const [currentFrame, setCurrentFrame] = useState(0);
     const [isPlaying, setIsPlaying] = useState(true);
 
-    // Clean up paths: React/Next uses public paths relative to root, e.g., /web-apps-frames/coupe/...
     const validFrames = frames.length > 0;
 
     useEffect(() => {
@@ -22,13 +22,16 @@ export function AnimatedPreview({ frames, slug }: AnimatedPreviewProps) {
         if (isPlaying && validFrames) {
             interval = setInterval(() => {
                 setCurrentFrame((prev) => (prev + 1) % frames.length);
-            }, 1000); // 1 second per frame - adjust speed if needed
+            }, 1000);
         }
 
         return () => clearInterval(interval);
     }, [isPlaying, frames.length, validFrames]);
 
     const togglePlay = () => setIsPlaying(!isPlaying);
+
+    // Prefix frames with basePath for GitHub Pages
+    const resolvedFrames = frames.map((f) => `${BASE_PATH}${f}`);
 
     return (
         <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl relative group">
@@ -37,15 +40,15 @@ export function AnimatedPreview({ frames, slug }: AnimatedPreviewProps) {
             <div className="w-full aspect-[16/9] bg-slate-900 flex items-center justify-center relative overflow-hidden">
                 {validFrames ? (
                     <>
-                        {frames.map((frame, index) => (
-                            <Image
+                        {resolvedFrames.map((frame, index) => (
+                            /* eslint-disable-next-line @next/next/no-img-element */
+                            <img
                                 key={frame}
                                 src={frame}
                                 alt={`${slug} preview frame ${index + 1}`}
-                                fill
-                                className={`object-contain transition-opacity duration-300 ${index === currentFrame ? "opacity-100" : "opacity-0"
+                                className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ${index === currentFrame ? "opacity-100" : "opacity-0"
                                     }`}
-                                priority={index === 0}
+                                loading={index === 0 ? "eager" : "lazy"}
                             />
                         ))}
                     </>
