@@ -118,7 +118,7 @@ export default function ProjectSlugPage() {
         framesFolderName: null
     };
 
-    const frames = project.framesFolderName ? getFramesForProject(project.framesFolderName) : [];
+    const frames = getFramesForProject(slug);
 
     return (
         <div className="flex flex-col h-full w-full">
@@ -127,7 +127,7 @@ export default function ProjectSlugPage() {
                 <EditorTab title={project.name} icon={FileCode2} iconColor="text-blue-400" isActive={true} />
             </div>
 
-            <div className="flex-1 overflow-y-auto w-full custom-scrollbar relative flex flex-col bg-white dark:bg-background-dark pb-24">
+            <div className="flex-1 overflow-y-auto w-full custom-scrollbar relative flex flex-col bg-white dark:bg-background-dark pb-6">
 
                 {/* Code Content */}
                 <div className="flex flex-col pt-4 font-mono text-sm leading-relaxed w-full">
@@ -153,7 +153,7 @@ export default function ProjectSlugPage() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 space-y-3 bg-gradient-to-t from-white dark:from-background-dark via-white dark:via-background-dark to-transparent pt-12 md:max-w-2xl mx-auto md:relative md:bg-none md:mt-12">
+                <div className="p-6 space-y-3 md:max-w-2xl mx-auto md:mt-12">
                     {project.liveUrl && (
                         <a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-primary/20">
                             <Rocket className="w-5 h-5" />
