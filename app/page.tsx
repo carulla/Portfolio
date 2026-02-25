@@ -3,7 +3,7 @@
 import { TerminalWindow, TypewriterText } from '@/components/ui/terminal-window';
 import { motion } from 'framer-motion';
 import { Folder, Database, LayoutTemplate, Braces } from 'lucide-react';
-import Image from 'next/image';
+
 
 export default function Home() {
   return (
@@ -14,12 +14,11 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/20 to-transparent z-20" />
 
         <div className="w-full h-full glitch-border relative">
-          <Image
-            src="/gabriel.png"
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/Portfolio/gabriel.png"
             alt="Gabriel Carulla"
-            fill
-            className="object-cover grayscale brightness-75 contrast-125 transition-all duration-700 group-hover:grayscale-0 group-hover:brightness-100"
-            priority
+            className="absolute inset-0 w-full h-full object-cover grayscale brightness-75 contrast-125 transition-all duration-700 group-hover:grayscale-0 group-hover:brightness-100"
           />
         </div>
 
