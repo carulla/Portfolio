@@ -12,12 +12,60 @@ type Message = {
     text: string;
 };
 
+// Knowledge base about Gabriel Carulla for the AI to use
+const GABRIEL_KNOWLEDGE = {
+    name: "Gabriel Carulla",
+    role: "Full Stack Developer & AI Analyst",
+    experience: "6+ years in tech, 8+ years as an English Teacher",
+    specialties: ["Vibe Coding", "Low-Code / No-Code", "AI Agent Systems", "Full Stack Development"],
+    techStack: ["Next.js", "Vue.js", "TypeScript", "TailwindCSS", "Supabase", "N8N", "Framer Motion"],
+    projects: {
+        "Coupe": "Complete SaaS for Salon and Barbershop management and communication. Currently adopted by active businesses.",
+        "Fluentes": "Language Learning Web App with dozens of active monthly users, focusing on fluid, practical English acquisition.",
+        "JustPlay Sports": "Web application tailored for a sports-in-school company, streamlining operations and scheduling.",
+        "EvidencIA": "Evidence Registering and Classroom Managing system designed specifically to reduce teacher workload.",
+        "Running Records": "EdTech application for Kids Literacy Teaching, allowing educators to track reading fluency progress."
+    },
+    background: "Previously an English Teacher for 8 years, giving him an edge in top-tier communication, empathy for the end-user, and breaking down complex problems.",
+    approach: "Specializes in turning complex problems into elegant, scalable solutions using modern web technologies and AI-powered workflows."
+};
+
+function getAIResponse(userText: string, step: number, formData: { name: string; phone: string; message: string }): string {
+    const lower = userText.toLowerCase();
+
+    // If in free-chat mode (step >= 3 means done, but we handle general questions in steps 0-2 too)
+    // Check for questions about Gabriel regardless of step
+    if (lower.includes('who is gabriel') || lower.includes('about gabriel') || lower.includes('tell me about')) {
+        return `Gabriel Carulla is a ${GABRIEL_KNOWLEDGE.role} with ${GABRIEL_KNOWLEDGE.experience}. ${GABRIEL_KNOWLEDGE.approach} He specializes in ${GABRIEL_KNOWLEDGE.specialties.join(', ')}.`;
+    }
+    if (lower.includes('project') || lower.includes('work') || lower.includes('portfolio')) {
+        const projectList = Object.entries(GABRIEL_KNOWLEDGE.projects)
+            .map(([name, desc]) => `• ${name}: ${desc}`)
+            .join('\n');
+        return `Here are Gabriel's projects:\n${projectList}`;
+    }
+    if (lower.includes('stack') || lower.includes('tech') || lower.includes('tools') || lower.includes('language')) {
+        return `Gabriel's tech stack includes: ${GABRIEL_KNOWLEDGE.techStack.join(', ')}. He specializes in ${GABRIEL_KNOWLEDGE.specialties.join(', ')}.`;
+    }
+    if (lower.includes('experience') || lower.includes('background') || lower.includes('history')) {
+        return `${GABRIEL_KNOWLEDGE.background} He now has ${GABRIEL_KNOWLEDGE.experience}, specializing in ${GABRIEL_KNOWLEDGE.specialties.slice(0, 2).join(' and ')}.`;
+    }
+    if (lower.includes('contact') || lower.includes('hire') || lower.includes('reach') || lower.includes('email')) {
+        return "You're in the right place! Just tell me your name and I'll help you send Gabriel a message directly. 🚀";
+    }
+    if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey') || lower.includes('oi') || lower.includes('olá')) {
+        return `Hey there! 👋 I'm Gabriel's AI assistant. I know all about his work and projects. Feel free to ask me anything, or I can help you send him a message!`;
+    }
+
+    return '';
+}
+
 export default function ContactPage() {
     // 0: Ask Name, 1: Ask Phone, 2: Ask Message, 3: Done
     const [step, setStep] = useState(0);
     const [messages, setMessages] = useState<Message[]>([
         { id: 'initial-1', sender: 'ai', text: "Hi there! I'm Gabriel's AI assistant. 👋" },
-        { id: 'initial-2', sender: 'ai', text: "I can take a message and securely forward it to his terminal. Before we start, what's your name?" }
+        { id: 'initial-2', sender: 'ai', text: `I know all about Gabriel — he's a ${GABRIEL_KNOWLEDGE.role} with ${GABRIEL_KNOWLEDGE.experience}. Ask me anything about his projects or skills, or I can take a message for him! What's your name?` }
     ]);
     const [inputVal, setInputVal] = useState('');
     const [isTyping, setIsTyping] = useState(false);
@@ -37,43 +85,49 @@ export default function ContactPage() {
     }, [messages, isTyping]);
 
     const handleSend = () => {
-        if (!inputVal.trim() || isTyping || step >= 3) return;
+        if (!inputVal.trim() || isTyping) return;
+        if (step >= 3) return;
 
         const userText = inputVal.trim();
-        const newMessages = [...messages, { id: Date.now().toString(), sender: 'user' as const, text: userText }];
+        const newMessages: Message[] = [...messages, { id: Date.now().toString(), sender: 'user' as const, text: userText }];
         setMessages(newMessages);
         setInputVal('');
         setIsTyping(true);
 
-        // Process step transition with simulated AI delay
         setTimeout(() => {
+            // Check for knowledge-based response first
+            const knowledgeResponse = getAIResponse(userText, step, formData);
+
             let aiResponse = '';
 
-            if (step === 0) {
+            if (knowledgeResponse) {
+                // It's a question about Gabriel — answer it, stay on same step
+                aiResponse = knowledgeResponse;
+                if (step === 0) {
+                    aiResponse += "\n\nBy the way, what's your name? I'd love to help you reach out to Gabriel.";
+                }
+            } else if (step === 0) {
                 setFormData(prev => ({ ...prev, name: userText }));
                 aiResponse = `Nice to meet you, ${userText}! Could I get your phone number or email so we can reach you back?`;
                 setStep(1);
             } else if (step === 1) {
                 setFormData(prev => ({ ...prev, phone: userText }));
-                aiResponse = "Perfect. What message would you like me to pass along?";
+                aiResponse = "Perfect. What message would you like me to pass along to Gabriel?";
                 setStep(2);
             } else if (step === 2) {
                 setFormData(prev => ({ ...prev, message: userText }));
                 aiResponse = "Thanks! I've encrypted your message and dispatched it. Gabriel will get back to you soon. Have a great day! ✨";
                 setStep(3);
-
-                // In a real app, you would send the `formData` payload to your API here.
                 console.log('Sending payload:', { ...formData, message: userText });
             }
 
             setMessages([...newMessages, { id: (Date.now() + 1).toString(), sender: 'ai', text: aiResponse }]);
             setIsTyping(false);
 
-            // Auto-focus input for next step if not done
-            if (step < 2) {
+            if (step < 2 && !knowledgeResponse) {
                 setTimeout(() => inputRef.current?.focus(), 100);
             }
-        }, 800 + Math.random() * 600); // Random delay between 800ms to 1400ms for realism
+        }, 800 + Math.random() * 600);
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -85,16 +139,16 @@ export default function ContactPage() {
 
     return (
         <div className="flex flex-col h-full w-full bg-slate-50 dark:bg-background-dark overflow-hidden">
-            {/* Editor Tabs - Keep the IDE immersion */}
-            <div className="flex border-b border-primary/20 bg-white dark:bg-slate-950/50 overflow-x-auto hide-scrollbar z-10 sticky top-0">
+            {/* Editor Tabs */}
+            <div className="flex border-b border-primary/20 bg-white dark:bg-slate-950/50 overflow-x-auto hide-scrollbar z-10 flex-shrink-0">
                 <EditorTab title="index.js" icon={FileCode2} iconColor="text-yellow-500" isActive={false} />
                 <EditorTab title="projects.py" icon={FileJson} iconColor="text-blue-400" isActive={false} />
                 <EditorTab title="contact.ai" icon={MessageSquare} iconColor="text-emerald-500" isActive={true} />
             </div>
 
-            {/* Chat Area */}
-            <div className="flex-1 overflow-y-auto w-full custom-scrollbar relative flex flex-col pt-4 pb-24 md:pb-32 px-4 md:px-8">
-                <div className="max-w-2xl w-full mx-auto flex flex-col gap-4">
+            {/* Chat Area — takes up all remaining space */}
+            <div className="flex-1 overflow-y-auto w-full custom-scrollbar relative flex flex-col pt-4 px-4 md:px-8">
+                <div className="max-w-2xl w-full mx-auto flex flex-col gap-4 pb-4">
 
                     {/* Timestamp Header */}
                     <div className="text-center text-xs text-slate-400 font-medium py-4">
@@ -118,7 +172,7 @@ export default function ContactPage() {
 
                                 {/* Message Bubble */}
                                 <div className={`
-                                    max-w-[85%] md:max-w-[75%] rounded-2xl px-5 py-3 text-sm md:text-base leading-relaxed
+                                    max-w-[85%] md:max-w-[75%] rounded-2xl px-5 py-3 text-sm md:text-base leading-relaxed whitespace-pre-line
                                     ${msg.sender === 'user'
                                         ? 'bg-primary text-white rounded-br-sm shadow-md shadow-primary/10'
                                         : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-bl-sm shadow-sm border border-slate-100 dark:border-slate-700'
@@ -151,8 +205,8 @@ export default function ContactPage() {
                 </div>
             </div>
 
-            {/* Input Dock */}
-            <div className="absolute flex flex-col bottom-[80px] md:bottom-[45px] left-0 right-0 bg-gradient-to-t from-slate-50 dark:from-background-dark via-slate-50 dark:via-background-dark to-transparent pt-12 pb-4 px-4 md:px-8 border-t-transparent z-20">
+            {/* Input Dock — fixed at bottom of flex, not absolute */}
+            <div className="flex-shrink-0 bg-slate-50 dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 px-4 md:px-8 py-3">
                 <div className="max-w-2xl w-full mx-auto relative group">
                     <div className={`absolute -inset-0.5 bg-gradient-to-r from-primary to-emerald-500 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-1000 group-hover:duration-200 ${step >= 3 ? 'hidden' : 'block'}`}></div>
 
@@ -165,13 +219,13 @@ export default function ContactPage() {
                         <input
                             ref={inputRef}
                             autoFocus
-                            type={step === 1 ? 'text' : 'text'}
+                            type="text"
                             value={inputVal}
                             onChange={(e) => setInputVal(e.target.value)}
                             onKeyDown={handleKeyDown}
                             disabled={isTyping || step >= 3}
                             placeholder={
-                                step === 0 ? "Type your name..." :
+                                step === 0 ? "Type your name or ask me about Gabriel..." :
                                     step === 1 ? "Enter phone or email..." :
                                         step === 2 ? "Leave a message..." :
                                             "Session closed."
@@ -193,13 +247,13 @@ export default function ContactPage() {
                 </div>
 
                 {/* AI Footer note */}
-                <div className="text-center mt-3 text-[10px] text-slate-400 flex items-center justify-center gap-1 font-medium tracking-wide">
+                <div className="text-center mt-2 text-[10px] text-slate-400 flex items-center justify-center gap-1 font-medium tracking-wide">
                     <Sparkles className="w-3 h-3 text-emerald-500" /> Powered by Vibe Engine
                 </div>
             </div>
 
             {/* Terminal Footer Status Bar */}
-            <footer className="absolute bottom-0 left-0 right-0 h-[45px] border-t border-slate-200 dark:border-primary/20 bg-slate-100 dark:bg-slate-950 p-2 px-4 flex items-center justify-between text-[11px] font-bold tracking-wider text-slate-500 z-30">
+            <footer className="flex-shrink-0 h-[45px] border-t border-slate-200 dark:border-primary/20 bg-slate-100 dark:bg-slate-950 p-2 px-4 flex items-center justify-between text-[11px] font-bold tracking-wider text-slate-500">
                 <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1.5 text-primary">
                         <span className="material-symbols-outlined text-xs">account_tree</span>
@@ -210,7 +264,7 @@ export default function ContactPage() {
                         <span className="text-emerald-500/80">AI READY</span>
                     </div>
                 </div>
-                <div className="flex items-center gap-3 hidden md:flex">
+                <div className="hidden md:flex items-center gap-3">
                     <span>UTF-8</span>
                     <div className="flex items-center gap-1">
                         <span className="material-symbols-outlined text-xs">sync</span>

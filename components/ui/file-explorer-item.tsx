@@ -1,3 +1,6 @@
+'use client';
+
+import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { LucideIcon, ChevronRight } from 'lucide-react';
 
@@ -12,7 +15,10 @@ interface FileExplorerItemProps {
     className?: string;
     children?: React.ReactNode;
     depth?: number;
+    previewFrames?: string[];
 }
+
+const BASE_PATH = process.env.NODE_ENV === 'production' ? '/Portfolio' : '';
 
 export function FileExplorerItem({
     name,
@@ -25,7 +31,25 @@ export function FileExplorerItem({
     className,
     children,
     depth = 0,
+    previewFrames,
 }: FileExplorerItemProps) {
+    const [currentFrame, setCurrentFrame] = useState(0);
+    const [isHovered, setIsHovered] = useState(false);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        if (isHovered && previewFrames && previewFrames.length > 0) {
+            intervalRef.current = setInterval(() => {
+                setCurrentFrame(prev => (prev + 1) % previewFrames.length);
+            }, 800);
+        } else {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+        }
+        return () => {
+            if (intervalRef.current) clearInterval(intervalRef.current);
+        };
+    }, [isHovered, previewFrames]);
+
     // VS Code lists use ~12px per indent depth, plus some base padding.
     const paddingLeft = `${(depth * 12) + 8}px`;
 
@@ -69,20 +93,45 @@ export function FileExplorerItem({
     // File item
     return (
         <div
-            onClick={onClick}
-            style={{ paddingLeft: `${(depth * 12) + 26}px` }} // Files don't have chevron, offset by 18px
-            className={cn(
-                'flex items-center py-[2px] cursor-pointer hover:bg-[#2a2d2e] dark:hover:bg-[#2a2d2e] transition-colors overflow-hidden whitespace-nowrap',
-                isActive
-                    ? 'bg-[#37373d] text-white dark:bg-[#37373d]'
-                    : 'bg-transparent text-slate-700 dark:text-[#cccccc]',
-                className
-            )}
+            className="flex flex-col"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
         >
-            <Icon className={cn('w-4 h-4 shrink-0 mr-1.5', iconColor || 'text-slate-400')} />
-            <span className={cn('text-[13px] select-none truncate', isActive ? 'text-white' : '')}>
-                {name}
-            </span>
+            <div
+                onClick={onClick}
+                style={{ paddingLeft: `${(depth * 12) + 26}px` }}
+                className={cn(
+                    'flex items-center py-[2px] cursor-pointer hover:bg-[#2a2d2e] dark:hover:bg-[#2a2d2e] transition-colors overflow-hidden whitespace-nowrap',
+                    isActive
+                        ? 'bg-[#37373d] text-white dark:bg-[#37373d]'
+                        : 'bg-transparent text-slate-700 dark:text-[#cccccc]',
+                    className
+                )}
+            >
+                <Icon className={cn('w-4 h-4 shrink-0 mr-1.5', iconColor || 'text-slate-400')} />
+                <span className={cn('text-[13px] select-none truncate', isActive ? 'text-white' : '')}>
+                    {name}
+                </span>
+            </div>
+
+            {/* Animated mini preview on hover */}
+            {previewFrames && previewFrames.length > 0 && isHovered && (
+                <div
+                    style={{ marginLeft: `${(depth * 12) + 26}px` }}
+                    className="mr-2 mt-1 mb-2 rounded-md overflow-hidden border border-slate-700 shadow-lg aspect-[16/9] relative bg-slate-900 max-w-[200px]"
+                >
+                    {previewFrames.map((frame, index) => (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img
+                            key={frame}
+                            src={`${BASE_PATH}${frame}`}
+                            alt={`${name} preview`}
+                            className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ${index === currentFrame ? 'opacity-100' : 'opacity-0'}`}
+                            loading={index === 0 ? 'eager' : 'lazy'}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

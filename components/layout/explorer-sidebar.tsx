@@ -5,6 +5,15 @@ import { useRouter, usePathname } from 'next/navigation';
 import { FileExplorerItem } from '@/components/ui/file-explorer-item';
 import { Folder, Database, FileJson, LayoutTemplateIcon, FileCode2 } from 'lucide-react';
 
+// Preview frame data for each project
+const PREVIEW_FRAMES: Record<string, string[]> = {
+    coupe: Array.from({ length: 12 }, (_, i) => `/web-apps-frames/coupe/frame-${i + 1}.webp`),
+    fluentes: Array.from({ length: 16 }, (_, i) => `/web-apps-frames/fluentes/frame-${i + 1}.webp`),
+    justplay: Array.from({ length: 11 }, (_, i) => `/web-apps-frames/justplay/frame-${i + 1}.webp`),
+    evidencia: Array.from({ length: 21 }, (_, i) => `/web-apps-frames/evidencia/frame-${i + 1}.webp`),
+    runningrecords: Array.from({ length: 13 }, (_, i) => `/web-apps-frames/runningrecords/frame-${i + 1}.webp`),
+};
+
 export function ExplorerSidebar() {
     const router = useRouter();
     const pathname = usePathname();
@@ -51,6 +60,7 @@ export function ExplorerSidebar() {
                             isActive={pathname === '/projects/coupe'}
                             onClick={() => router.push('/projects/coupe')}
                             depth={2}
+                            previewFrames={PREVIEW_FRAMES.coupe}
                         />
                         <FileExplorerItem
                             name="Fluentes.app"
@@ -60,6 +70,7 @@ export function ExplorerSidebar() {
                             isActive={pathname === '/projects/fluentes'}
                             onClick={() => router.push('/projects/fluentes')}
                             depth={2}
+                            previewFrames={PREVIEW_FRAMES.fluentes}
                         />
                         <FileExplorerItem
                             name="JustPlay.app"
@@ -69,6 +80,7 @@ export function ExplorerSidebar() {
                             isActive={pathname === '/projects/just-play-sports'}
                             onClick={() => router.push('/projects/just-play-sports')}
                             depth={2}
+                            previewFrames={PREVIEW_FRAMES.justplay}
                         />
                     </FileExplorerItem>
 
@@ -89,6 +101,7 @@ export function ExplorerSidebar() {
                             isActive={pathname === '/projects/evidencia'}
                             onClick={() => router.push('/projects/evidencia')}
                             depth={2}
+                            previewFrames={PREVIEW_FRAMES.evidencia}
                         />
                         <FileExplorerItem
                             name="RunningRecords.ts"
@@ -98,6 +111,7 @@ export function ExplorerSidebar() {
                             isActive={pathname === '/projects/running-records'}
                             onClick={() => router.push('/projects/running-records')}
                             depth={2}
+                            previewFrames={PREVIEW_FRAMES.runningrecords}
                         />
                     </FileExplorerItem>
 
