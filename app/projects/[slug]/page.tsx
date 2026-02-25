@@ -5,6 +5,118 @@ import { EditorTab } from '@/components/ui/editor-tab';
 import { FileCode2, Play, Code2, Rocket } from 'lucide-react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { AnimatedPreview } from '@/components/ui/animated-preview';
+
+// Mock data for project image frame lengths. We use the manually extracted list
+// of valid paths so Next.js static export does not need fs on the client side.
+const PROJECT_FRAMECOUNTS: Record<string, number> = {
+    'coupe': 12,
+    'fluentes': 16,
+    'just-play-sports': 11,
+    'evidencia': 21,
+    'running-records': 13
+};
+
+// Map original keys to folder names
+const FOLDER_NAMES: Record<string, string> = {
+    'coupe': 'coupe',
+    'fluentes': 'fluentes',
+    'just-play-sports': 'justplay',
+    'evidencia': 'evidencia',
+    'running-records': 'runningrecords'
+};
+
+// Mappings manually extracted from directory to prevent fs import entirely on the client
+const PROJECT_FRAMES: Record<string, string[]> = {
+    'coupe': [
+        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.18.01.png",
+        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.18.09.png",
+        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.18.16.png",
+        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.18.22.png",
+        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.18.29.png",
+        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.18.38.png",
+        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.18.57.png",
+        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.19.06.png",
+        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.19.17.png",
+        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.19.42.png",
+        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.19.47.png",
+        "/web-apps-frames/coupe/Captura de Tela 2026-02-25 às 08.20.03.png",
+    ],
+    'fluentes': [
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.20.46.png",
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.20.53.png",
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.20.59.png",
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.21.05.png",
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.21.12.png",
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.21.18.png",
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.21.30.png",
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.21.51.png",
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.22.05.png",
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.23.11.png",
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.23.27.png",
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.23.34.png",
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.23.46.png",
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.23.56.png",
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.24.09.png",
+        "/web-apps-frames/fluentes/Captura de Tela 2026-02-25 às 08.24.23.png",
+    ],
+    'just-play-sports': [
+        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.25.35.png",
+        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.25.44.png",
+        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.25.51.png",
+        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.25.54.png",
+        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.25.59.png",
+        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.26.04.png",
+        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.26.07.png",
+        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.26.16.png",
+        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.26.30.png",
+        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.26.45.png",
+        "/web-apps-frames/justplay/Captura de Tela 2026-02-25 às 08.27.05.png",
+    ],
+    'evidencia': [
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.27.37.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.27.44.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.27.51.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.27.58.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.28.21.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.28.25.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.28.31.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.28.49.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.28.52.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.28.55.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.29.02.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.29.12.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.29.33.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.29.57.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.30.05.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.30.17.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.30.31.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.30.43.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.31.05.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.31.14.png",
+        "/web-apps-frames/evidencia/Captura de Tela 2026-02-25 às 08.31.32.png",
+    ],
+    'running-records': [
+        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.13.png",
+        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.19.png",
+        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.25.png",
+        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.31.png",
+        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.39.png",
+        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.45.png",
+        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.51.png",
+        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.32.58.png",
+        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.33.11.png",
+        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.33.28.png",
+        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.33.37.png",
+        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.34.00.png",
+        "/web-apps-frames/runningrecords/Captura de Tela 2026-02-25 às 08.34.15.png",
+    ]
+};
+
+// Generate frames safely using our extracted object avoiding fs entirely
+function getFramesForProject(slug: string): string[] {
+    return PROJECT_FRAMES[slug] || [];
+}
 
 // Mock data for projects
 const PROJECT_DATA: Record<string, any> = {
@@ -18,7 +130,8 @@ const PROJECT_DATA: Record<string, any> = {
             { num: '04', code: <p className="ml-4">role: <span className="text-amber-500">"Full Stack / Architecture"</span>,</p> },
             { num: '05', code: <p>{'};'}</p> },
         ],
-        liveUrl: 'https://app.coupebrasil.cloud'
+        liveUrl: 'https://app.coupebrasil.cloud',
+        framesFolderName: 'coupe'
     },
     'fluentes': {
         name: 'Fluentes.app',
@@ -30,7 +143,8 @@ const PROJECT_DATA: Record<string, any> = {
             { num: '04', code: <p className="ml-4">role: <span className="text-amber-500">"Full Stack / Creator"</span>,</p> },
             { num: '05', code: <p>{'};'}</p> },
         ],
-        liveUrl: 'https://app.fluentesparasempre.com.br'
+        liveUrl: 'https://app.fluentesparasempre.com.br',
+        framesFolderName: 'fluentes'
     },
     'just-play-sports': {
         name: 'JustPlay.app',
@@ -42,7 +156,8 @@ const PROJECT_DATA: Record<string, any> = {
             { num: '04', code: <p className="ml-4">role: <span className="text-amber-500">"Frontend & Backend"</span>,</p> },
             { num: '05', code: <p>{'};'}</p> },
         ],
-        liveUrl: 'https://justplaysports.com.br'
+        liveUrl: 'https://justplaysports.com.br',
+        framesFolderName: 'justplay'
     },
     'evidencia': {
         name: 'EvidencIA.ts',
@@ -54,7 +169,8 @@ const PROJECT_DATA: Record<string, any> = {
             { num: '04', code: <p className="ml-4">role: <span className="text-amber-500">"Full Stack / Vibe Coding"</span>,</p> },
             { num: '05', code: <p>{'};'}</p> },
         ],
-        liveUrl: 'https://evidencia-evidencia.74xbo3.easypanel.host/'
+        liveUrl: 'https://evidencia-evidencia.74xbo3.easypanel.host/',
+        framesFolderName: 'evidencia'
     },
     'running-records': {
         name: 'RunningRecords.ts',
@@ -66,7 +182,8 @@ const PROJECT_DATA: Record<string, any> = {
             { num: '04', code: <p className="ml-4">role: <span className="text-amber-500">"Full Stack / EdTech"</span>,</p> },
             { num: '05', code: <p>{'};'}</p> },
         ],
-        liveUrl: 'https://education-runningrecords.jezior.easypanel.host/'
+        liveUrl: 'https://education-runningrecords.jezior.easypanel.host/',
+        framesFolderName: 'runningrecords'
     }
 };
 
@@ -79,8 +196,11 @@ export default function ProjectSlugPage() {
         lang: 'javascript',
         lines: [
             { num: '01', code: <p className="text-slate-500 italic">// Project content not found...</p> }
-        ]
+        ],
+        framesFolderName: null
     };
+
+    const frames = project.framesFolderName ? getFramesForProject(project.framesFolderName) : [];
 
     return (
         <div className="flex flex-col h-full w-full">
@@ -102,30 +222,16 @@ export default function ProjectSlugPage() {
                         </div>
                     ))}
 
-                    {/* Media Preview (Mock) */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mt-8 mx-6 md:mx-12 relative group max-w-2xl"
-                    >
-                        <div className="absolute -top-3 left-4 bg-primary text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-tighter z-10 shadow-md">
-                            Media Preview
-                        </div>
-                        <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-2xl relative">
-                            <div className="absolute inset-0 bg-primary/10 mix-blend-overlay pointer-events-none" />
-                            <div className="w-full aspect-[16/9] bg-slate-900 flex items-center justify-center relative">
-                                {/* Standard placeholder pattern to look like a project preview */}
-                                <div className="absolute inset-0 bg-gradient-to-br from-slate-800 to-background-dark grid-bg opacity-50" />
-                                <Play className="w-16 h-16 text-white/50 z-10 group-hover:text-primary transition-colors cursor-pointer" />
-                            </div>
-                            <div className="p-4 bg-slate-50 dark:bg-slate-900/90 backdrop-blur-sm flex justify-between items-center border-t border-slate-200 dark:border-slate-800">
-                                <div>
-                                    <p className="font-bold text-sm">{slug}-preview.png</p>
-                                    <p className="text-xs text-slate-500">1.2 MB — 1920x1080</p>
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div>
+                    {/* Animated Preview Component */}
+                    {frames.length > 0 && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mt-8 mx-6 md:mx-12 relative group max-w-2xl"
+                        >
+                            <AnimatedPreview frames={frames} slug={slug} />
+                        </motion.div>
+                    )}
                 </div>
 
                 {/* Action Buttons */}
