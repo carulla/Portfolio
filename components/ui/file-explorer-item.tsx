@@ -113,11 +113,12 @@ export function FileExplorerItem({
                 </span>
             </div>
 
-            {/* Animated mini preview on hover */}
+            {/* Animated mini preview — always visible, clickable, zoom on hover */}
             {previewFrames && previewFrames.length > 0 && showPreview && (
                 <div
+                    onClick={onClick}
                     style={{ marginLeft: `${(depth * 12) + 26}px` }}
-                    className="mr-2 mt-1 mb-2 rounded-md overflow-hidden border border-slate-700 shadow-lg aspect-[16/9] relative bg-slate-900 max-w-[200px]"
+                    className="mr-2 mt-1 mb-2 rounded-md overflow-hidden border border-slate-700 shadow-lg aspect-[16/9] relative bg-slate-900 max-w-[200px] cursor-pointer group/preview"
                 >
                     {previewFrames.map((frame, index) => (
                         /* eslint-disable-next-line @next/next/no-img-element */
@@ -125,7 +126,7 @@ export function FileExplorerItem({
                             key={frame}
                             src={`${BASE_PATH}${frame}`}
                             alt={`${name} preview`}
-                            className={`absolute inset-0 w-full h-full object-contain transition-all duration-1000 ease-in-out ${index === currentFrame ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
+                            className={`absolute inset-0 w-full h-full object-contain transition-all duration-1000 ease-in-out group-hover/preview:scale-110 ${index === currentFrame ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
                             loading={index === 0 ? 'eager' : 'lazy'}
                         />
                     ))}

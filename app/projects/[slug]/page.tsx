@@ -153,7 +153,7 @@ export default function ProjectSlugPage() {
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="mt-8 mx-6 md:mx-auto md:w-[90%] lg:w-[80%] max-w-6xl relative rounded-xl p-[1px] overflow-hidden group shadow-2xl shadow-primary/10"
+                            className="mt-8 mx-4 md:mx-auto md:w-[95%] max-w-7xl relative rounded-xl p-[1px] overflow-hidden group shadow-2xl shadow-primary/10"
                         >
                             {/* Magic UI Border Beam implementation */}
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-[spin_4s_linear_infinite]"
@@ -161,7 +161,7 @@ export default function ProjectSlugPage() {
                             <div className="absolute inset-[1px] bg-slate-100 dark:bg-slate-900 rounded-xl" />
 
                             {/* Actual Preview Content */}
-                            <div className="relative rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 flex items-center justify-center min-h-[200px] md:min-h-[500px]">
+                            <div className="relative rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-900 flex items-center justify-center min-h-[220px] md:min-h-[40vh] lg:min-h-[55vh] max-h-[70vh]">
                                 <AnimatedPreview frames={frames} slug={slug} />
                             </div>
                         </motion.div>
