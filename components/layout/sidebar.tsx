@@ -2,21 +2,20 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FileCode2, Search, GitBranch, Blocks, Settings, UserCircle } from 'lucide-react';
+import { Home, FolderOpen, Code2, Mail, Settings, UserCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export function Sidebar() {
     const pathname = usePathname();
 
     const navItems = [
-        { icon: FileCode2, href: '/projects', label: 'Explorer' },
-        { icon: Search, href: '#', label: 'Search' },
-        { icon: GitBranch, href: '#', label: 'Source Control' },
-        { icon: Blocks, href: '#', label: 'Extensions' },
+        { icon: Home, href: '/', label: 'Home' },
+        { icon: FolderOpen, href: '/projects', label: 'Work' },
+        { icon: Code2, href: '/stack', label: 'Stack' },
+        { icon: Mail, href: '/contact', label: 'Contact' },
     ];
 
     const bottomItems = [
-        { icon: UserCircle, href: '/', label: 'Profile' },
         { icon: Settings, href: '#', label: 'Settings' },
     ];
 
@@ -24,7 +23,9 @@ export function Sidebar() {
         <div className="hidden md:flex fixed left-0 top-0 bottom-0 w-14 bg-surface-dark border-r border-slate-800 flex-col items-center py-4 z-50">
             <div className="flex flex-col items-center gap-6 w-full">
                 {navItems.map((item) => {
-                    const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+                    const isActive = item.href === '/'
+                        ? pathname === '/'
+                        : pathname === item.href || pathname.startsWith(item.href + '/');
                     const Icon = item.icon;
                     return (
                         <Link
