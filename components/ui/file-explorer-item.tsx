@@ -34,11 +34,12 @@ export function FileExplorerItem({
     previewFrames,
 }: FileExplorerItemProps) {
     const [currentFrame, setCurrentFrame] = useState(0);
-    const [isHovered, setIsHovered] = useState(false);
+    const [showPreview, setShowPreview] = useState(true);
+    const [isHovered, setIsHovered] = useState(false); // Kept for other hover effects if needed
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
     useEffect(() => {
-        if (isHovered && previewFrames && previewFrames.length > 0) {
+        if (showPreview && previewFrames && previewFrames.length > 0) {
             intervalRef.current = setInterval(() => {
                 setCurrentFrame(prev => (prev + 1) % previewFrames.length);
             }, 800);
@@ -94,8 +95,6 @@ export function FileExplorerItem({
     return (
         <div
             className="flex flex-col"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
         >
             <div
                 onClick={onClick}
@@ -115,7 +114,7 @@ export function FileExplorerItem({
             </div>
 
             {/* Animated mini preview on hover */}
-            {previewFrames && previewFrames.length > 0 && isHovered && (
+            {previewFrames && previewFrames.length > 0 && showPreview && (
                 <div
                     style={{ marginLeft: `${(depth * 12) + 26}px` }}
                     className="mr-2 mt-1 mb-2 rounded-md overflow-hidden border border-slate-700 shadow-lg aspect-[16/9] relative bg-slate-900 max-w-[200px]"
