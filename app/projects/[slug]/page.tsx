@@ -48,7 +48,7 @@ const PROJECT_DATA: Record<string, any> = {
             { num: '04', code: <p className="ml-4">role: <span className="text-amber-500">"Full Stack / Architecture"</span>,</p> },
             { num: '05', code: <p>{'};'}</p> },
         ],
-        liveUrl: 'https://app.coupebrasil.cloud',
+        liveUrl: 'https://coupebrasil.cloud',
         framesFolderName: 'coupe'
     },
     'fluentes': {
