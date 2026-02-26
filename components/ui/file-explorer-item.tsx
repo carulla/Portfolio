@@ -42,14 +42,14 @@ export function FileExplorerItem({
         if (showPreview && previewFrames && previewFrames.length > 0) {
             intervalRef.current = setInterval(() => {
                 setCurrentFrame(prev => (prev + 1) % previewFrames.length);
-            }, 800);
+            }, 2000); // Slower frame rate
         } else {
             if (intervalRef.current) clearInterval(intervalRef.current);
         }
         return () => {
             if (intervalRef.current) clearInterval(intervalRef.current);
         };
-    }, [isHovered, previewFrames]);
+    }, [showPreview, previewFrames]);
 
     // VS Code lists use ~12px per indent depth, plus some base padding.
     const paddingLeft = `${(depth * 12) + 8}px`;
@@ -125,7 +125,7 @@ export function FileExplorerItem({
                             key={frame}
                             src={`${BASE_PATH}${frame}`}
                             alt={`${name} preview`}
-                            className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ${index === currentFrame ? 'opacity-100' : 'opacity-0'}`}
+                            className={`absolute inset-0 w-full h-full object-contain transition-all duration-1000 ease-in-out ${index === currentFrame ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}
                             loading={index === 0 ? 'eager' : 'lazy'}
                         />
                     ))}
