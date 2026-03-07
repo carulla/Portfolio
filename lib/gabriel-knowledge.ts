@@ -147,6 +147,13 @@ designed for educators managing early literacy development.`,
         responseStyle: "He hits you up on WhatsApp or email — fast.",
     },
 
+    // --- CONTACT INFO ---
+    contactInfo: {
+        phone: "83991084586",
+        email: "gabcarulla@hotmail.com",
+        instagram: "@gabriel.carulla",
+    },
+
     // --- PERSONAL / HUMAN SIDE ---
     personal: {
         languages: ["Portuguese (native)", "English (fluent / professional)", "French (fluent)", "Spanish (currently learning — target: fluent in 4 months)"],
@@ -170,6 +177,10 @@ designed for educators managing early literacy development.`,
         "interested in working", "i want to hire", "ready to send", "leave a message",
         "drop my info", "send him a message", "reach gabriel", "i'm done",
         "let's connect", "i'd like to connect", "get started", "book", "budget",
+        "contato", "falar com", "contratar", "mandar mensagem", "entrar em contato",
+        "trabalhar junto", "deixar meus dados", "como falo com", "tenho interesse",
+        "quero contratar", "enviar mensagem", "falar com ele", "conectar",
+        "orçamento", "orcamento", "valor", "preço", "preco"
     ],
 };
 
@@ -192,7 +203,7 @@ CRITICAL RULES:
    Keep answers concise unless more detail is needed.
 4. HONESTY: If you don't know something specific, say so — don't invent. 
    Offer to pass the question to Gabriel via the contact form.
-5. LANGUAGE: Match the visitor's language. If they write in Portuguese, answer in Portuguese.
+5. LANGUAGE: Match the visitor's language. If they write in Portuguese, answer in Portuguese. Always prioritize the language they are currently using to browse the site if detectable, but switch if they speak to you in another language.
 
 GABRIEL'S KNOWLEDGE BASE:
 ${JSON.stringify(GABRIEL_KB, null, 2)}

@@ -6,6 +6,7 @@ import { EditorTab } from '@/components/ui/editor-tab';
 import { FileCode2, FileJson } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { GABRIEL_KB, SYSTEM_PROMPT } from '@/lib/gabriel-knowledge';
+import { useTranslation } from 'react-i18next';
 
 type Message = {
     id: string;
@@ -22,7 +23,8 @@ type LeadStep = 'chat' | 'ask-name' | 'ask-contact' | 'ask-message' | 'done';
 function getAIResponse(
     userText: string,
     leadStep: LeadStep,
-    formData: { name: string; contact: string; message: string }
+    formData: { name: string; contact: string; message: string },
+    t: any
 ): { response: string; nextStep?: LeadStep; updatedForm?: Partial<typeof formData> } {
 
     const lower = userText.toLowerCase().trim();
@@ -31,21 +33,21 @@ function getAIResponse(
     // --- LEAD CAPTURE FLOW ---
     if (leadStep === 'ask-name') {
         return {
-            response: `Nice to meet you, ${userText}! 😊 What's the best WhatsApp number or email to reach you?`,
+            response: t('ai.name_prompt', { name: userText }),
             nextStep: 'ask-contact',
             updatedForm: { name: userText },
         };
     }
     if (leadStep === 'ask-contact') {
         return {
-            response: `Got it! And what message would you like to send Gabriel?`,
+            response: t('ai.contact_prompt'),
             nextStep: 'ask-message',
             updatedForm: { contact: userText },
         };
     }
     if (leadStep === 'ask-message') {
         return {
-            response: `Perfect. ✅\n\nI've passed your message along to Gabriel. He'll hit you up on ${formData.contact} soon. He's quick! 🚀`,
+            response: t('ai.success', { contact: formData.contact }),
             nextStep: 'done',
             updatedForm: { message: userText },
         };
@@ -56,7 +58,7 @@ function getAIResponse(
     const wantsContact = leadTriggers.some(kw => lower.includes(kw));
     if (wantsContact) {
         return {
-            response: `Sure! I'll help you get in touch with Gabriel. 🤝\n\nFirst — what's your name?`,
+            response: t('ai.lead_start'),
             nextStep: 'ask-name',
         };
     }
@@ -69,14 +71,14 @@ function getAIResponse(
     // Greetings
     if (has('hi', 'hey', 'hello', 'oi', 'olá', 'ola', 'salut', 'bonjour', 'hola', 'howdy', 'sup', 'yo', 'e aí', 'eai', 'tudo bem', 'tudo bom', 'good morning', 'good afternoon', 'good evening')) {
         return {
-            response: `Hey there! 👋 I'm Gabriel's AI assistant — I know everything about him and his work.\n\nFeel free to ask me anything: his projects, his background, his stack, how to work with him... What would you like to know?`,
+            response: t('ai.greeting'),
         };
     }
 
     // Who / what is Gabriel — very broad including Portuguese
     if (has('who is', 'who are', 'quem é', 'quem e', 'tell me about', 'about gabriel', 'sobre gabriel', 'sobre ele', "who's gabriel", 'what does he do', 'what he does', 'o que ele faz', 'o que faz', 'what does gabriel', 'what is he', 'what is gabriel', 'what is his', 'descreva', 'describe', 'resumo', 'summary', 'overview', 'introdução', 'introduce', 'apresente', 'me fale')) {
         return {
-            response: `Gabriel Carulla is a full-time school teacher AND a SaaS founder — both at the same time. 🤯\n\nHe teaches ELA, Science and Math (in English!) at Maple Bear João Pessoa, a bilingual Canadian school in Brazil. But outside of school hours, he's been quietly building real products that real people pay for.\n\nHe taught himself to code in 2022 by relentlessly iterating with ChatGPT, earned a national award for it in 2023, and has since launched 5 live apps with real users. He's the kind of person who spots an unsolved problem and can't rest until he's cracked it.`,
+            response: t('ai.whois'),
         };
     }
 
@@ -225,7 +227,7 @@ function getAIResponse(
 
     // Catch-all fallback
     return {
-        response: `Hmm, I'm not sure I have a specific answer for that one. 🤔\n\nTry asking about Gabriel's projects, background, tech stack, teaching career, or how to work with him. Or rephrase — I might just be missing context!\n\nYou can also say "I want to reach out" and I'll connect you with Gabriel directly.`,
+        response: t('ai.fallback'),
     };
 }
 
@@ -233,17 +235,18 @@ function getAIResponse(
 // COMPONENT
 // -------------------------------------------------------
 export default function ContactPage() {
+    const { t } = useTranslation();
     const [leadStep, setLeadStep] = useState<LeadStep>('chat');
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 'initial-1',
             sender: 'ai',
-            text: `Hey! 👋 I'm Gabriel's AI assistant.`,
+            text: t('ai.greeting').split('\n\n')[0],
         },
         {
             id: 'initial-2',
             sender: 'ai',
-            text: `I know everything about him — his projects, background, skills, how to work with him, and the story behind it all.\n\nAsk me anything, or just say you want to leave him a message and I'll handle that too. What's on your mind?`,
+            text: t('ai.greeting').split('\n\n').slice(1).join('\n\n'),
         },
     ]);
     const [inputVal, setInputVal] = useState('');
@@ -258,11 +261,11 @@ export default function ContactPage() {
     }, [messages, isTyping]);
 
     const getPlaceholder = () => {
-        if (leadStep === 'ask-name') return 'Your name...';
-        if (leadStep === 'ask-contact') return 'WhatsApp or email...';
-        if (leadStep === 'ask-message') return 'Your message for Gabriel...';
-        if (leadStep === 'done') return 'Message sent! ✅';
-        return 'Ask me anything about Gabriel...';
+        if (leadStep === 'ask-name') return t('ai.placeholder_name') || 'Your name...';
+        if (leadStep === 'ask-contact') return t('ai.placeholder_contact') || 'WhatsApp or email...';
+        if (leadStep === 'ask-message') return t('ai.placeholder_message') || 'Your message for Gabriel...';
+        if (leadStep === 'done') return t('ai.sent') || 'Message sent! ✅';
+        return t('ai.placeholder');
     };
 
     const handleSend = () => {
@@ -278,7 +281,7 @@ export default function ContactPage() {
         setIsTyping(true);
 
         setTimeout(() => {
-            const { response, nextStep, updatedForm } = getAIResponse(userText, leadStep, formData);
+            const { response, nextStep, updatedForm } = getAIResponse(userText, leadStep, formData, t);
 
             if (updatedForm) {
                 setFormData(prev => ({ ...prev, ...updatedForm }));

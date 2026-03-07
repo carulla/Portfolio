@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { FileExplorerItem } from '@/components/ui/file-explorer-item';
 import { Folder, Database, FileJson, LayoutTemplateIcon, FileCode2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 // Preview frame data for each project
 const PREVIEW_FRAMES: Record<string, string[]> = {
@@ -17,6 +18,7 @@ const PREVIEW_FRAMES: Record<string, string[]> = {
 export function ExplorerSidebar() {
     const router = useRouter();
     const pathname = usePathname();
+    const { t } = useTranslation();
 
     // Default open folders
     const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({
@@ -32,12 +34,12 @@ export function ExplorerSidebar() {
     return (
         <aside className={`w-full md:w-64 flex-col border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#192233] flex-shrink-0 h-full overflow-y-auto ${pathname === '/projects' ? 'flex' : 'hidden md:flex'}`}>
             <div className="px-4 py-3 sticky top-0 bg-slate-50 dark:bg-[#192233] z-10 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Explorer</h2>
+                <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{t('projects.explorer')}</h2>
             </div>
 
             <div className="py-2 flex flex-col gap-[1px]">
                 <FileExplorerItem
-                    name="Portfolio"
+                    name={t('projects.folder_portfolio')}
                     type="folder"
                     icon={Folder}
                     isOpen={openFolders['Portfolio']}
@@ -45,7 +47,7 @@ export function ExplorerSidebar() {
                     depth={0}
                 >
                     <FileExplorerItem
-                        name="Web-Apps"
+                        name={t('projects.folder_apps')}
                         type="folder"
                         icon={Folder}
                         isOpen={openFolders['Web-Apps']}
@@ -85,7 +87,7 @@ export function ExplorerSidebar() {
                     </FileExplorerItem>
 
                     <FileExplorerItem
-                        name="EdTech-Projects"
+                        name={t('projects.folder_edtech')}
                         type="folder"
                         icon={Folder}
                         iconColor="text-cyan-500"

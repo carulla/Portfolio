@@ -2,10 +2,13 @@
 
 import { TerminalWindow, TypewriterText } from '@/components/ui/terminal-window';
 import { motion } from 'framer-motion';
-import { Folder, Database, LayoutTemplate, Braces } from 'lucide-react';
+import { Folder, Database, LayoutTemplate, Braces, Phone, Mail, Instagram } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 
 export default function Home() {
+  const { t } = useTranslation();
+
   return (
     <main className="flex-1 flex flex-col h-full overflow-y-auto custom-scrollbar md:flex-row">
       {/* Top/Left Section: Visual Profile */}
@@ -48,7 +51,7 @@ export default function Home() {
                 </div>
 
                 <div className="pl-0 mt-2 text-terminal-cyan font-bold tracking-wide text-sm md:text-base">
-                  <TypewriterText text="> AI Analyst | Full Stack Developer | Vibe Coder" delay={500} />
+                  <TypewriterText key={t('home.role')} text={`> ${t('home.role')}`} delay={500} />
                 </div>
               </div>
 
@@ -93,8 +96,38 @@ export default function Home() {
                 className="mt-8 p-4 bg-surface-dark/40 rounded-lg border border-slate-800/50"
               >
                 <p className="text-slate-400 italic text-xs md:text-sm leading-relaxed">
-                  // Full Stack Developer with 6 years of tech experience, specializing in Vibe Coding, Low-Code, and No-Code solutions. Previously an English Teacher for 8 years, giving me an edge in top-tier communication, empathy for the end-user, and breaking down complex problems.
+                  {t('home.bio')}
                 </p>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 5.5, duration: 1 }}
+                className="pt-6 border-t border-slate-800/50"
+              >
+                <div className="flex items-center gap-2 opacity-60 mb-4 text-sm md:text-base">
+                  <span className="text-terminal-green">guest@carulla</span>
+                  <span className="text-slate-500">:</span>
+                  <span className="text-primary">~</span>
+                  <span className="text-slate-100">$</span>
+                  <span className="text-slate-400">cat contact.txt</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-slate-300">
+                  <a href="https://wa.me/5583991084586" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-primary transition-colors">
+                    <Phone className="w-4 h-4 text-green-400" />
+                    <span>83 99108-4586</span>
+                  </a>
+                  <a href="mailto:gabcarulla@hotmail.com" className="flex items-center gap-3 hover:text-primary transition-colors">
+                    <Mail className="w-4 h-4 text-blue-400" />
+                    <span>gabcarulla@hotmail.com</span>
+                  </a>
+                  <a href="https://instagram.com/gabriel.carulla" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:text-primary transition-colors">
+                    <Instagram className="w-4 h-4 text-pink-500" />
+                    <span>@gabriel.carulla</span>
+                  </a>
+                </div>
               </motion.div>
             </div>
           </TerminalWindow>

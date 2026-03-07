@@ -2,13 +2,15 @@
 
 import { TerminalWindow } from '@/components/ui/terminal-window';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 export default function StackPage() {
+    const { t } = useTranslation();
     const stack = [
         { label: 'Full Stack', type: 'code', icon: '💻' },
         { label: 'Vibe Coder', type: 'code', icon: '✨' },
         { label: 'AI Automation', type: 'code', icon: '🤖' },
-        { label: 'English Teacher', type: 'translate', icon: '🌍' },
+        { label: t('nav.teacher') || 'English Teacher', type: 'translate', icon: '🌍' },
     ];
 
     return (
@@ -17,7 +19,7 @@ export default function StackPage() {
                 <TerminalWindow title="bash — 80x24">
                     <div className="flex gap-2">
                         <span className="text-primary font-bold">$</span>
-                        <span className="text-slate-100 italic">npm install skills</span>
+                        <span className="text-slate-100 italic">{t('stack.install')}</span>
                     </div>
 
                     <motion.div
@@ -53,7 +55,7 @@ export default function StackPage() {
                         transition={{ delay: 1 }}
                         className="pt-4 text-slate-500 text-xs"
                     >
-                        <span>✨ added 3 packages, and audited 4 packages in 12ms</span>
+                        <span>{t('stack.packages')}</span>
                     </motion.div>
 
                     <motion.div
@@ -70,12 +72,12 @@ export default function StackPage() {
 
             <div className="mt-8 grid grid-cols-2 gap-4 w-full max-w-md">
                 <div className="p-4 rounded-xl bg-slate-200/50 dark:bg-slate-900/40 border border-slate-300 dark:border-slate-800 backdrop-blur-md">
-                    <p className="text-slate-500 dark:text-slate-400 text-xs mb-1 uppercase font-bold tracking-wider">Commits</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-xs mb-1 uppercase font-bold tracking-wider">{t('stack.commits')}</p>
                     <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">1.2k+</p>
                 </div>
                 <div className="p-4 rounded-xl bg-slate-200/50 dark:bg-slate-900/40 border border-slate-300 dark:border-slate-800 backdrop-blur-md">
-                    <p className="text-slate-500 dark:text-slate-400 text-xs mb-1 uppercase font-bold tracking-wider">Experience</p>
-                    <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">6 Years</p>
+                    <p className="text-slate-500 dark:text-slate-400 text-xs mb-1 uppercase font-bold tracking-wider">{t('stack.experience')}</p>
+                    <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{t('stack.years')}</p>
                 </div>
             </div>
         </div>
